@@ -1,6 +1,13 @@
 machine:
+  services:
+    - docker
   node:
     version: 4.2.4
+dependencies:
+  pre:
+    # TODO: Steps to install Oracle instant client
+    # Fetch Oracle Express Edition Docker image
+    - docker pull wnameless/oracle-xe-11g
 test:
   override:
     # Run lint
