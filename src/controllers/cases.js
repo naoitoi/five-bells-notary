@@ -11,16 +11,17 @@ function CasesControllerFactory (Cases) {
      * @apiGroup Case
      * @apiVersion 1.0.0
      *
-     * @apiDescription Get the witness' perspective on a case.
+     * @apiDescription Get Notary's perspective on a case.
      *
-     * @apiParam {String} id Hash of the case
+     * @apiParam {String} id UUID of the case
      *
-     * @return {void}
+     * @apiSuccess {JSON} body Case object in JSON format
      */
     static * getResource () {
       const id = this.params.id.toLowerCase()
       request.validateUriParameter('id', id, 'Uuid')
       this.body = yield Cases.getCase(id)
+      console.log('getResource result: ' + JSON.stringify(this.body, null, 2))
     }
 
     /**
@@ -29,14 +30,20 @@ function CasesControllerFactory (Cases) {
      * @apiGroup Case
      * @apiVersion 1.0.0
      *
-     * @apiDescription Inform the witness about a new case.
+     * @apiDescription Inform Notary about a new case.
      *
-     * @apiParam {String} id Hash of the case
+     * @apiParam {String} id UUID of the case
+     * @apiParam {JSON} body id: Same with id above<br/>
+     * execution_condition: crypto condition to be executed by Notary<br/>
+     * expires_at: expiration time<br/>
+     * notaries: array of Notary URLs
      *
      * @return {void}
      */
     static * putResource () {
       const id = this.params.id.toLowerCase()
+      console.log('putResource ID  : ' + JSON.stringify(this.params.id, null, 2))
+      console.log('putResource body: ' + JSON.stringify(this.body, null, 2))
       request.validateUriParameter('id', id, 'Uuid')
       this.body = yield Cases.putCase(id, this.body)
       this.status = 201
@@ -48,8 +55,10 @@ function CasesControllerFactory (Cases) {
      * @apiGroup Case
      * @apiVersion 1.0.0
      *
-     * @apiDescription Submit a fulfillment to a case.
+     * @apiDescription Submit a fulfillment for a case.
      * @apiParam {String} id UUID of the case
+     * @apiParam {JSON} body type: fulfillment type<br/>
+     * signature: fulfillment signature
      *
      * @return {void}
      */
